@@ -45,7 +45,7 @@ public class ProductController {
     @GetMapping("/product/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable("id") Long id) {
         System.out.println("Starting the getSingleProduct API here");
-        Product p = productService.getSingleProduct(id);
+        Product product = productService.getSingleProduct(id);
         System.out.println("Ending the API here");
 
         //First argument is the data we want to pass
@@ -53,7 +53,7 @@ public class ProductController {
         //Local variable 'productResponseEntity' is redundant
 
         return new ResponseEntity<>(
-                p,              //First argument is the data we want to pass
+                product,              //First argument is the data we want to pass
                 HttpStatus.OK   //Next is the HttpStatus Class code
         );
     }
