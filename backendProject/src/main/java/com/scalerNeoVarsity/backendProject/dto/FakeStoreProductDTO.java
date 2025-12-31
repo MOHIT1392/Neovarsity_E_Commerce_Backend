@@ -43,4 +43,13 @@ public class FakeStoreProductDTO {
                 ", image='" + image + '\'' +
                 '}';
     }
+
+    public Product[] getListOfProducts(FakeStoreProductDTO[] listOfProducts) {
+        Product[] list = new Product[listOfProducts.length];
+        for (int i = 0; i < listOfProducts.length; i++) {
+            list[i] = listOfProducts[i].getProduct();
+        }
+
+        return list;
+    }
 }

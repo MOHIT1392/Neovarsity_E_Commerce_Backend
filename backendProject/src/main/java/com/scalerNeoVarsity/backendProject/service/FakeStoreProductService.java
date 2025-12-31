@@ -52,4 +52,12 @@ public class FakeStoreProductService implements ProductService {
     public Product updateProduct(Long id, String title, String description, Double price, Category category, String imageUrl) {
         return null;
     }
+    @Override
+    public Product[] getAllProducts() {
+        System.out.println("In the getAllProducts API in FKSPS");
+        FakeStoreProductDTO[] listOfProducts =
+                restTemplate.getForObject("https://fakestoreapi.com/products/",
+                        FakeStoreProductDTO[].class);
+        return new FakeStoreProductDTO().getListOfProducts(listOfProducts);
+    }
 }

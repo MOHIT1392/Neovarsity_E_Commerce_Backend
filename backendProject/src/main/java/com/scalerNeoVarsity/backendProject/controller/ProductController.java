@@ -46,7 +46,7 @@ public class ProductController {
     public ResponseEntity<Product> getProductById(@PathVariable("id") Long id) {
         System.out.println("Starting the getSingleProduct API here");
         Product product = productService.getSingleProduct(id);
-        System.out.println("Ending the API here");
+        System.out.println("Ending the getSingleProduct API here");
 
         //First argument is the data we want to pass
         //Next is the HttpStatus Class code
@@ -87,6 +87,15 @@ public class ProductController {
                 HttpStatus.ACCEPTED
 
         );
+    }
+
+    @GetMapping("/product")
+    public Product[] getAllProducts() {
+        System.out.println("Starting the Get all Products API");
+        Product[] products = productService.getAllProducts();
+        System.out.println("Ending the Get All products API");
+
+        return products;
     }
 
 }
