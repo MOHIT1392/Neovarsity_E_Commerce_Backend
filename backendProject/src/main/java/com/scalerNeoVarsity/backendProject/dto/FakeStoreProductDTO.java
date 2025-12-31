@@ -32,4 +32,15 @@ public class FakeStoreProductDTO {
 
         return product;
     }
+    @Override
+    public String toString() {
+        return "FakeStoreProductDTO{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", price=" + price +
+                ", description='" + description + '\'' +
+                ", category='" + category + '\'' +
+                ", image='" + image + '\'' +
+                '}';
+    }
 }

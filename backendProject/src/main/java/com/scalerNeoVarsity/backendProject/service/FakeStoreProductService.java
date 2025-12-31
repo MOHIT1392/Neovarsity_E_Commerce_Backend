@@ -3,6 +3,7 @@ package com.scalerNeoVarsity.backendProject.service;
 import com.scalerNeoVarsity.backendProject.models.Category;
 import com.scalerNeoVarsity.backendProject.models.Product;
 import com.scalerNeoVarsity.backendProject.service.ProductService;
+import org.springframework.web.client.RestTemplate;
 
 import org.springframework.stereotype.Service;
 
@@ -12,7 +13,11 @@ import java.util.List;
 @Service
 public class FakeStoreProductService implements ProductService {
 
-    //Inside this, fake store is going to be third party service
+    private RestTemplate restTemplate;
+
+    public FakeStoreProductService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     @Override
     public Product getSingleProduct(Long id) {
