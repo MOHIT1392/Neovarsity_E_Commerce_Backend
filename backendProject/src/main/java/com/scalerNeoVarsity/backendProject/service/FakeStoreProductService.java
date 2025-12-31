@@ -1,5 +1,6 @@
 package com.scalerNeoVarsity.backendProject.service;
 
+import com.scalerNeoVarsity.backendProject.dto.FakeStoreProductDTO;
 import com.scalerNeoVarsity.backendProject.models.Category;
 import com.scalerNeoVarsity.backendProject.models.Product;
 import com.scalerNeoVarsity.backendProject.service.ProductService;
@@ -26,8 +27,20 @@ public class FakeStoreProductService implements ProductService {
     }
 
     @Override
-    public Product createProduct(Long id, String title, String description, Double price, String category, String imageUrl) {
-        return null;
+    public Product createProduct(Long id, String title, String description,
+                                 Double price, String category, String imageUrl) {
+        FakeStoreProductDTO fakeStoreProductDTO = new FakeStoreProductDTO();
+        fakeStoreProductDTO.setId(id);
+        fakeStoreProductDTO.setTitle(title);
+        fakeStoreProductDTO.setDescription(description);
+        fakeStoreProductDTO.setPrice(price);
+        fakeStoreProductDTO.setCategory(category);
+        fakeStoreProductDTO.setImage(imageUrl);
+
+        FakeStoreProductDTO response = restTemplate.postForObject("https://fakestoreapi.com/products",
+                fakeStoreProductDTO, FakeStoreProductDTO.class);
+
+        return response.getProduct();
     }
 
     @Override
