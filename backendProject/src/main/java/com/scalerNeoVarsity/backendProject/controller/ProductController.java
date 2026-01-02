@@ -5,7 +5,8 @@ import com.scalerNeoVarsity.backendProject.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import com.scalerNeoVarsity.backendProject.exception.ProductNotFoundException;
+import com.scalerNeoVarsity.backendProject.dto.ErrorDTO;
 import java.util.List;
 
 @RestController
@@ -45,7 +46,7 @@ public class ProductController {
 
     //This will help in "Retrieve" function
     @GetMapping("/product/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable("id") Long id) {
+    public ResponseEntity<Product> getProductById(@PathVariable("id") Long id) throws ProductNotFoundException {
         System.out.println("Starting the getSingleProduct API here");
         Product product = productService.getSingleProduct(id);
         System.out.println("Ending the getSingleProduct API here");
@@ -64,7 +65,7 @@ public class ProductController {
 
     //This will help in "Update" function
     @PutMapping("/product/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable("id") Long id, @RequestBody Product product) {
+    public ResponseEntity<Product> updateProduct(@PathVariable("id") Long id, @RequestBody Product product) throws ProductNotFoundException {
         Product updatedProduct = productService.updateProduct(id,
                 product.getTitle(), product.getDescription(),
                 product.getPrice(), product.getCategory(),
@@ -79,7 +80,7 @@ public class ProductController {
 
     //This will help in "Delete" function
     @DeleteMapping("/product/{id}")
-    public ResponseEntity<Product> deleteProduct(@PathVariable("id") Long id) {
+    public ResponseEntity<Product> deleteProduct(@PathVariable("id") Long id) throws ProductNotFoundException {
         System.out.println("Starting the delete API");
         Product deletedProduct = productService.deleteProduct(id);
         System.out.println("Ending the delete API");
@@ -98,6 +99,14 @@ public class ProductController {
         System.out.println("Ending the Get All products API");
 
         return products;
+    }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ErrorDTO handleProductNotFoundException(Exception e) {
+        ErrorDTO errorDTO = new ErrorDTO();
+        errorDTO.setMessage(e.getMessage());
+
+        return errorDTO;
     }
 
 }
