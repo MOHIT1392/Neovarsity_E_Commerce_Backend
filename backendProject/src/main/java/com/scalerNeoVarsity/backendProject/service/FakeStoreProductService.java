@@ -7,6 +7,9 @@ import com.scalerNeoVarsity.backendProject.service.ProductService;
 import org.springframework.web.client.RestTemplate;
 
 import org.springframework.stereotype.Service;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -55,10 +58,9 @@ public class FakeStoreProductService implements ProductService {
         System.out.println("Inside the update product in FakeStoreProductService API");
         Product existingProduct = getSingleProduct(id);
 
-        if (existingProduct != null) {
-            FakeStoreProductDTO fakeStoreProductDTO = new FakeStoreProductDTO();
+        ResponseEntity<Product> responseEntity = null;
+        try {
             System.out.println("Updating the Product");
-            fakeStoreProductDTO.setId(id);
             if (title != null) {
                 existingProduct.setTitle(title);
             }
@@ -74,13 +76,20 @@ public class FakeStoreProductService implements ProductService {
             if (imageUrl != null) {
                 existingProduct.setImageUrl(imageUrl);
             }
-            Product response =
-                    restTemplate.patchForObject("https://fakestoreapi.com/products/" + id,
-                            existingProduct, Product.class);
-            return response;
-        } else {
-            throw new RuntimeException("Product Not Exist");
+            // Create HttpEntity with the updated product
+            HttpEntity<Product> requestEntity = new HttpEntity<>(existingProduct);
+
+            // Use exchange() method instead of patchForObject
+            responseEntity = restTemplate.exchange(
+                    "https://fakestoreapi.com/products/" + id,
+                    HttpMethod.PUT,
+                    requestEntity,
+                    Product.class
+            );
+        } catch (RuntimeException re) {
+            throw new RuntimeException("Product Not Found" + re);
         }
+        return responseEntity.getBody();
     }
 
     @Override
