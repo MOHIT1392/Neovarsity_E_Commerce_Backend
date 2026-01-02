@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class ProductController {
 
@@ -90,9 +92,9 @@ public class ProductController {
     }
 
     @GetMapping("/product")
-    public Product[] getAllProducts() {
+    public List<Product> getAllProducts() {
         System.out.println("Starting the Get all Products API");
-        Product[] products = productService.getAllProducts();
+        List<Product> products = productService.getAllProducts();
         System.out.println("Ending the Get All products API");
 
         return products;

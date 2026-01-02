@@ -53,7 +53,7 @@ public class FakeStoreProductService implements ProductService {
         return null;
     }
     @Override
-    public Product[] getAllProducts() {
+    public List<Product> getAllProducts() {
         System.out.println("In the getAllProducts API in FKSPS");
         FakeStoreProductDTO[] listOfProducts =
                 restTemplate.getForObject("https://fakestoreapi.com/products/",
