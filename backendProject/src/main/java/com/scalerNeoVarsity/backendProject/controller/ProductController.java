@@ -102,11 +102,14 @@ public class ProductController {
     }
 
     @ExceptionHandler(ProductNotFoundException.class)
-    public ErrorDTO handleProductNotFoundException(Exception e) {
+    public ResponseEntity<ErrorDTO> handleProductNotFoundException(Exception e) {
         ErrorDTO errorDTO = new ErrorDTO();
         errorDTO.setMessage(e.getMessage());
 
-        return errorDTO;
+        return new ResponseEntity<>(
+                errorDTO,
+                HttpStatus.NOT_FOUND
+        );
     }
 
 }
