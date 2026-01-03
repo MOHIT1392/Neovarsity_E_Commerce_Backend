@@ -1,6 +1,7 @@
 package com.scalerNeoVarsity.backendProject.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,9 +13,8 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
 public class Category extends BaseModel {
-    @Setter
-    @Getter
     private String title;
 
     //We declare the cardinality between the Product and the Category Class
