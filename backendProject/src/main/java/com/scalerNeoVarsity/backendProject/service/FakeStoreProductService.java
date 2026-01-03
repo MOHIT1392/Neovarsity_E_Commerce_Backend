@@ -15,8 +15,7 @@ import com.scalerNeoVarsity.backendProject.exception.ProductNotFoundException;
 
 import java.util.List;
 
-//This annotation here is going to tell SpringBoot that this is one of our important class so create an object of this
-@Service
+@Service("fakeStoreProductService")
 public class FakeStoreProductService implements ProductService {
 
     @Autowired

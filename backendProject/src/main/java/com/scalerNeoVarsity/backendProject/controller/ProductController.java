@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import com.scalerNeoVarsity.backendProject.exception.ProductNotFoundException;
 import com.scalerNeoVarsity.backendProject.dto.ErrorDTO;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 @RestController
 public class ProductController {
@@ -24,7 +25,7 @@ public class ProductController {
     private final ProductService productService;
 
 
-    public ProductController(ProductService productService) {
+    public ProductController(@Qualifier("originalProductService") ProductService productService) {
         this.productService = productService;
     }
 
