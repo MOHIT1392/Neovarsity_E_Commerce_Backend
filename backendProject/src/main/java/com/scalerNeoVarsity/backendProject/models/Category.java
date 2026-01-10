@@ -27,6 +27,9 @@ public class Category extends BaseModel {
     @JsonIgnore
     private List<Product> products;
 
+    public Category(String testCategory) {
+    }
+
 
     @Override
     public String toString() {
