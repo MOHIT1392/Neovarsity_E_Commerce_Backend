@@ -11,8 +11,6 @@ public class BackendProjectApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(BackendProjectApplication.class, args);
-		Product product = new Product("Test title", "Test Description", 822.00,
-				"unknown image url", new Category("Test Category"));
 	}
 
 }
