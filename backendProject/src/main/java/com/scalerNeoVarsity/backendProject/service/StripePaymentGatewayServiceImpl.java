@@ -13,7 +13,6 @@ public class StripePaymentGatewayServiceImpl implements PaymentService{
     @Override
     public String makePayment(String orderId, Long amount) throws StripeException {
 
-       // Stripe.apiKey = "Removed_Intentionally";
 
         PriceCreateParams params =
                 PriceCreateParams.builder()
@@ -26,7 +25,6 @@ public class StripePaymentGatewayServiceImpl implements PaymentService{
 
         Price price = Price.create(params);
 
-    //    Stripe.apiKey = "Removed_Intentionally";
 
         PaymentLinkCreateParams linkParams =
                 PaymentLinkCreateParams.builder()
