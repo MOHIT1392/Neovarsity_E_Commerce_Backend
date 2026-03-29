@@ -8,6 +8,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -22,8 +27,13 @@ public class BaseModel implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
 
     private Long id;
+    @CreatedDate
+    @CreationTimestamp
     private LocalDateTime createdAt;
+    @LastModifiedDate
+    @UpdateTimestamp
     private LocalDateTime updatedAt;
     private boolean isDeleted;
+    @CreatedBy
     private String createdBy;
 }
