@@ -1,13 +1,12 @@
 package com.scalerNeoVarsity.backendProject;
 
 import com.scalerNeoVarsity.backendProject.models.Product;
+import com.scalerNeoVarsity.backendProject.repository.CategoryRepository;
 import com.scalerNeoVarsity.backendProject.repository.ProductRepository;
 import com.scalerNeoVarsity.backendProject.repository.projections.ProductProjection;
 import org.junit.jupiter.api.Test;
-import com.scalerNeoVarsity.backendProject.models.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import com.scalerNeoVarsity.backendProject.repository.CategoryRepository;
 
 import java.util.List;
 
@@ -22,19 +21,6 @@ class BackendProjectApplicationTests {
 
 	@Test
 	void contextLoads() {
-	}
-
-
-	@Test
-	void fetchTypeTest() {
-		Category category = categoryRepository.findById(1L);
-		System.out.println(category.getId());
-		System.out.println("We are done here");
-
-		List<Product> currentProducts = category.getProducts();
-		System.out.println(currentProducts.size());
-
-		System.out.println("We have the list of the products");
 	}
 
 	@Test
@@ -60,5 +46,14 @@ class BackendProjectApplicationTests {
 		List<ProductProjection> productProjectionList = productRepository.getProductByCategoryIdUsingProjections(1L);
 		System.out.println(productProjectionList.get(0).getTitle());
 	}
-
+//    @Test
+//    void fetchTypeTest() {
+//        Category category = categoryRepository.findById(1L).get();
+//        System.out.println(category.getId());
+//        System.out.println("We are done here");
+//
+//        List<Product> currentProducts = category.getProducts();
+//        System.out.println(currentProducts.size());
+//        System.out.println("We have the list of the products");
+//    }
 }

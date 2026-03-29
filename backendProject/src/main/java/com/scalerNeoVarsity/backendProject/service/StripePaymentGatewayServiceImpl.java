@@ -9,9 +9,10 @@ import com.stripe.param.PriceCreateParams;
 import org.springframework.stereotype.Service;
 
 @Service
-public class StripePaymentGatewayServiceImpl implements PaymentService{
+public class StripePaymentGatewayImplementation implements PaymentService{
     @Override
     public String makePayment(String orderId, Long amount) throws StripeException {
+
 
 
         PriceCreateParams params =
@@ -24,7 +25,6 @@ public class StripePaymentGatewayServiceImpl implements PaymentService{
                         .build();
 
         Price price = Price.create(params);
-
 
         PaymentLinkCreateParams linkParams =
                 PaymentLinkCreateParams.builder()

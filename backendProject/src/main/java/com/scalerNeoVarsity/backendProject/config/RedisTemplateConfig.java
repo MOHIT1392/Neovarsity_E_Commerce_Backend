@@ -18,7 +18,6 @@ public class RedisTemplateConfig {
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate() {
-        //Create and object of Redis template and define datatype k, v
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(jedisConnectionFactory());
         redisTemplate.setKeySerializer(new StringRedisSerializer());

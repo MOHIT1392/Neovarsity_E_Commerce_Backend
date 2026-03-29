@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 @RestController
 public class ProductController {
 
@@ -21,28 +22,16 @@ public class ProductController {
      * 4. Delete a product
      */
 
-    //This product controller has now the dependency on the productService
     private final ProductService productService;
 
-    //Constructor to pass service to pass in controller so we can implement it
-    //Added Qualifier Annotation to differentiate between which class we want to choose
-    //FakeStoreProductService or selfProductService
 
-    //Implemented Redis for FakeStoreProductService
-    //So had changed the Qualifier here
-    //To check redis functionality,
-    //Change the Qualifier to "fakeStoreProductService"
-    //Also, have to implement, REDIS for selfProductService
     public ProductController(@Qualifier("selfProductService") ProductService productService) {
         this.productService = productService;
     }
 
-    //This will help in performing "Create" function
-    //@RequestMapping(value = "/product", method = RequestMethod.POST)
-    //Post mapping does the same thing as request mapping of post and is a shortcut
+
     @PostMapping("/product")
     public ResponseEntity<Product> createProduct(@RequestBody Product product) {
-        //Creating new object of Product to pass the object in response entity
         Product newCreatedProduct = productService.createProduct(product.getId(),
                 product.getTitle(), product.getDescription(),
                 product.getPrice(), product.getCategory().getTitle(),
@@ -55,17 +44,14 @@ public class ProductController {
         );
     }
 
-    //This will help in "Retrieve" function
-    //@RequestMapping(value = "/product", method = RequestMethod.GET)
+
     @GetMapping("/product/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable("id") Long id) throws ProductNotFoundException {
         System.out.println("Starting the getSingleProduct API here");
         Product p = productService.getSingleProduct(id);
         System.out.println("Ending the API here");
 
-        //First argument is the data we want to pass
-        //Next is the HttpStatus Class code
-        //Local variable 'productResponseEntity' is redundant
+
 
         return new ResponseEntity<>(
                 p,              //First argument is the data we want to pass
@@ -93,8 +79,7 @@ public class ProductController {
 //    }
 //
 
-    //Added getAllProducts Using pagination and sorting
-    //That's why commented the previous getRequestMapping above
+
     @GetMapping("/products")
     public ResponseEntity<Page<Product>> getAllProducts(
             @RequestParam("pageNumber") int pageNumber,
@@ -114,8 +99,7 @@ public class ProductController {
         );
     }
 
-    //This will help in "Update" function
-    //@RequestMapping(value = "/product", method = RequestMethod.PUT)
+
     @PutMapping("/product/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable("id") Long id, @RequestBody Product product) throws ProductNotFoundException {
         Product updatedProduct = productService.updateProduct(id,
@@ -123,40 +107,33 @@ public class ProductController {
                 product.getPrice(), product.getCategory(),
                 product.getImageUrl());
 
-        //Local variable 'updatedProductResponseEntity' was redundant
         return new ResponseEntity<>(
                 updatedProduct,
                 HttpStatus.OK
         );
     }
 
-    //This will help in "Delete" function
-    //@RequestMapping(value = "/product", method = RequestMethod.DELETE)
+
     @DeleteMapping("/product/{id}")
     public ResponseEntity<Product> deleteProduct(@PathVariable("id") Long id) throws ProductNotFoundException {
         System.out.println("Starting the delete API");
         Product deletedProduct = productService.deleteProduct(id);
         System.out.println("Ending the delete API");
 
-        //Local variable 'deleteResponseEntity' is redundant
 
         return new ResponseEntity<>(
                 deletedProduct,
                 HttpStatus.ACCEPTED
-                //The HTTP status code 202 "Accepted"
-                //indicates that a request has been accepted for processing,
-                //but the processing has not been completed
+
         );
     }
 
-    //This method will be invoked whenever there will be a
-    //ProductNotFoundException in the call trace
+
     @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<ErrorDTO> handleProductNotFoundException(Exception e) {
         ErrorDTO errorDTO = new ErrorDTO();
         errorDTO.setMessage(e.getMessage());
 
-        //Local variable 'errorResponseEntity' is redundant
         return new ResponseEntity<>(
                 errorDTO,
                 HttpStatus.NOT_FOUND

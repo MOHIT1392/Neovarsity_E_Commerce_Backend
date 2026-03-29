@@ -1,5 +1,6 @@
 package com.scalerNeoVarsity.backendProject.controller;
 
+import com.scalerNeoVarsity.backendProject.exception.CategoryNotFoundException;
 import com.scalerNeoVarsity.backendProject.models.Category;
 import com.scalerNeoVarsity.backendProject.models.Product;
 import com.scalerNeoVarsity.backendProject.service.CategoryService;
@@ -39,7 +40,7 @@ public class CategoryController {
     }
 
     @GetMapping("/productsInCategory/{category}")
-    public ResponseEntity<List<Product>> getProductsByCategory(@PathVariable("category") String category) {
+    public ResponseEntity<List<Product>> getProductsByCategory(@PathVariable("category") String category) throws CategoryNotFoundException {
         List<Product> productsInCategory = categoryService.getProductsInCategory(category);
         return new ResponseEntity<>(productsInCategory, HttpStatus.OK);
     }

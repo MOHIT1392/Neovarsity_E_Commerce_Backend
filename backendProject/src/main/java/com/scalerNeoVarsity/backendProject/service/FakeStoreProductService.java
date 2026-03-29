@@ -1,28 +1,26 @@
 package com.scalerNeoVarsity.backendProject.service;
 
 import com.scalerNeoVarsity.backendProject.dto.FakeStoreProductDTO;
+import com.scalerNeoVarsity.backendProject.exception.ProductNotFoundException;
 import com.scalerNeoVarsity.backendProject.models.Category;
 import com.scalerNeoVarsity.backendProject.models.Product;
-import com.scalerNeoVarsity.backendProject.service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.web.client.RestTemplate;
-
-import org.springframework.stereotype.Service;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import com.scalerNeoVarsity.backendProject.exception.ProductNotFoundException;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
 
 @Service("fakeStoreProductService")
 public class FakeStoreProductService implements ProductService {
 
-    @Autowired
+
+    //    @Autowired
     private final RestTemplate restTemplate;
     private final RedisTemplate<String, Object> redisTemplate;
+
     public FakeStoreProductService(RestTemplate restTemplate, RedisTemplate<String, Object> redisTemplate) {
         this.restTemplate = restTemplate;
         this.redisTemplate = redisTemplate;
@@ -31,6 +29,7 @@ public class FakeStoreProductService implements ProductService {
     @Override
     public Product getSingleProduct(Long id) throws ProductNotFoundException {
         System.out.println("We are inside the single product in FakeStoreProductService");
+
         Product redisProduct = (Product) redisTemplate
                 .opsForHash()
                 .get("PRODUCTS", "PRODUCTS_" + id);
@@ -39,6 +38,9 @@ public class FakeStoreProductService implements ProductService {
             //Cache Hit
             return redisProduct;
         }
+
+        //If the earlier 'if' condition is not true
+        //Then we have cache miss, and then we shall hit the api
         FakeStoreProductDTO fakeStoreProductDTO =
                 restTemplate.getForObject("https://fakestoreapi.com/products/" + id,
                         FakeStoreProductDTO.class);
@@ -47,11 +49,40 @@ public class FakeStoreProductService implements ProductService {
         if (fakeStoreProductDTO == null) {
             throw new ProductNotFoundException("Product Not Found with id: " + id);
         }
+
+        //Because we had cache miss, now we shall do cache eviction
         redisTemplate.opsForHash().put("PRODUCTS", "PRODUCTS_" + id, fakeStoreProductDTO.getProduct());
+
         return fakeStoreProductDTO.getProduct();
     }
 
 
+//    @Override
+//    public Product[] getAllProducts(FakeStoreProductDTO[] listOfProducts) {
+//        return new Product[0];
+//    }
+
+//    public List<Product> getAllProducts() throws ProductNotFoundException {
+//        System.out.println("In the getAllProducts API in FKSPS");
+//        FakeStoreProductDTO[] fakeStoreListOfProducts =
+//                restTemplate.getForObject("https://fakestoreapi.com/products/",
+//                        FakeStoreProductDTO[].class);
+//        if (fakeStoreListOfProducts == null) {
+//            throw new ProductNotFoundException("No Products Found in the Database");
+//        }
+//        return new FakeStoreProductDTO().getListOfProducts(fakeStoreListOfProducts);
+//    }
+
+    @Override
+    public Page<Product> getAllProducts(int pageNumber, int pageSize, String fieldName) throws ProductNotFoundException {
+        FakeStoreProductDTO[] fakeStoreListOfProducts =
+                restTemplate.getForObject("https://fakestoreapi.com/products/",
+                        FakeStoreProductDTO[].class);
+        if (fakeStoreListOfProducts == null) {
+            throw new ProductNotFoundException("No Products Found in the Database");
+        }
+        return (Page<Product>) new FakeStoreProductDTO().getListOfProducts(fakeStoreListOfProducts);
+    }
 
     @Override
     public Product createProduct(Long id, String title, String description,
@@ -72,14 +103,16 @@ public class FakeStoreProductService implements ProductService {
 
     @Override
     public Product deleteProduct(Long id) throws ProductNotFoundException {
+        System.out.println("Inside the delete product in FakeStoreProductService API");
         Product deletedProduct = getSingleProduct(id);
         deletedProduct.setDeleted(true);
         restTemplate.delete("https://fakestoreapi.com/products/" + id);
         return deletedProduct;
     }
 
-    @Override
-    public Product updateProduct(Long id, String title, String description, Double price, Category category, String imageUrl) throws ProductNotFoundException {
+
+    public Product updateProduct(Long id, String title, String description,
+                                 Double price, Category category, String imageUrl) throws ProductNotFoundException {
         System.out.println("Inside the update product in FakeStoreProductService API");
         Product existingProduct = getSingleProduct(id);
 
@@ -101,6 +134,7 @@ public class FakeStoreProductService implements ProductService {
             if (imageUrl != null) {
                 existingProduct.setImageUrl(imageUrl);
             }
+
             // Create HttpEntity with the updated product
             HttpEntity<Product> requestEntity = new HttpEntity<>(existingProduct);
 
@@ -114,18 +148,42 @@ public class FakeStoreProductService implements ProductService {
         } catch (RuntimeException re) {
             throw new RuntimeException("Product Not Found" + re);
         }
-        return responseEntity.getBody();
+
+        return responseEntity.getBody(); //responseEntity != null ? responseEntity.getBody() : null;
     }
 
-    @Override
-    public Page<Product> getAllProducts(int pageNumber, int pageSize, String fieldName) throws ProductNotFoundException {
-        System.out.println("In the getAllProducts API in FKSPS");
-        FakeStoreProductDTO[] fakeStoreListOfProducts  =
-                restTemplate.getForObject("https://fakestoreapi.com/products/",
-                        FakeStoreProductDTO[].class);
-        if (fakeStoreListOfProducts  == null) {
-            throw new ProductNotFoundException("No Products Found in the Database");
-        }
-        return (Page<Product>) new FakeStoreProductDTO().getListOfProducts(fakeStoreListOfProducts);
-    }
+//    public Product updateProduct(Long id, String title, String description,
+//                                 Double price, Category category, String imageUrl) {
+//        System.out.println("Inside the update product in FakeStoreProductService API");
+//        Product existingProduct = getSingleProduct(id);
+//
+//        if (existingProduct != null) {
+//            FakeStoreProductDTO fakeStoreProductDTO = new FakeStoreProductDTO();
+//            System.out.println("Updating the Product");
+//            fakeStoreProductDTO.setId(id);
+//            if (title != null) {
+//                existingProduct.setTitle(title);
+//            }
+//            if (description != null) {
+//                existingProduct.setDescription(description);
+//            }
+//            if (price != null) {
+//                existingProduct.setPrice(price);
+//            }
+//            if (category != null) {
+//                existingProduct.setCategory(category);
+//            }
+//            if (imageUrl != null) {
+//                existingProduct.setImageUrl(imageUrl);
+//            }
+//            Product response =
+//                    restTemplate.patchForObject("https://fakestoreapi.com/products/" + id,
+//                            existingProduct, Product.class);
+//            return response;
+//        } else {
+//            throw new RuntimeException("Product Not Found");
+//        }
+//       return null;
+//    }
+
 }

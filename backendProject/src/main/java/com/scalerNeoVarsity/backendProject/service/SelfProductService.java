@@ -11,7 +11,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service("selfProductService")
@@ -36,6 +35,16 @@ public class SelfProductService implements ProductService {
         throw new ProductNotFoundException("Product not found in our database");
     }
 
+//    @Override
+//    public List<Product> getAllProducts() throws ProductNotFoundException {
+//        Optional<List<Product>> listOfProducts = Optional.of(productRepository.findAll());
+//        if (listOfProducts.isEmpty()) {
+//            throw new ProductNotFoundException("No Products in the database");
+//        }
+//        return listOfProducts.get();
+//    }
+
+
     @Override
     public Page<Product> getAllProducts(int pageNumber, int pageSize, String fieldName) throws ProductNotFoundException {
         Page<Product> listOfProducts = productRepository.findAll(
@@ -49,6 +58,7 @@ public class SelfProductService implements ProductService {
         if (!listOfProducts.hasContent()) {
             throw new ProductNotFoundException("Products not found in our database");
         }
+
         return listOfProducts;
     }
 
@@ -60,11 +70,6 @@ public class SelfProductService implements ProductService {
         product.setPrice(price);
         product.setImageUrl(imageUrl);
 
-        //We have to first check if the given category is present or not
-        //If it is not present, then we have to create new Category
-        //And save it in the category repository.
-        //We use Optional Class because if the category is not present
-        //Then it will return null instead of throwing an error
         Optional<Category> currentCategory = categoryRepository.findByTitle(categoryTitle);
 
         if (currentCategory.isEmpty()) {
@@ -77,7 +82,6 @@ public class SelfProductService implements ProductService {
             product.setCategory(currentCategory.get());
         }
 
-        //Saving the product in the repository as well as returning it at the same time.
         return productRepository.save(product);
     }
 
@@ -95,10 +99,8 @@ public class SelfProductService implements ProductService {
 
     @Override
     public Product updateProduct(Long id, String title, String description, Double price, Category category, String imageUrl) throws ProductNotFoundException {
-// Fetch the product by ID
         Product existingProduct = getSingleProduct(id);
 
-        // Update fields if the new values are not null (allowing partial updates)
         if (title != null && !title.isEmpty()) {
             existingProduct.setTitle(title);
         }
@@ -112,7 +114,6 @@ public class SelfProductService implements ProductService {
             existingProduct.setImageUrl(imageUrl);
         }
 
-        // Update the category if provided
         if (category != null) {
             // Check if the category already exists in the database
             Optional<Category> existingCategory = categoryRepository.findByTitle(category.getTitle());
@@ -125,7 +126,6 @@ public class SelfProductService implements ProductService {
             }
         }
 
-        // Save and return the updated product
         return productRepository.save(existingProduct);
     }
 }
