@@ -9,6 +9,8 @@ import lombok.Setter;
 
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import jakarta.persistence.EntityListeners;
 
 import java.util.List;
 
@@ -17,6 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Category extends BaseModel {
     private String title;
 
