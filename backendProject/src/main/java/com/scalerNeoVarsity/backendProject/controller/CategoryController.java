@@ -3,6 +3,7 @@ package com.scalerNeoVarsity.backendProject.controller;
 import com.scalerNeoVarsity.backendProject.models.Category;
 import com.scalerNeoVarsity.backendProject.models.Product;
 import com.scalerNeoVarsity.backendProject.service.CategoryService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class CategoryController {
     //This now has dependency on the CategoryService
     private CategoryService categoryService;
 
-    public CategoryController(CategoryService categoryService) {
+    public CategoryController(@Qualifier("selfCategoryService") CategoryService categoryService) {
         this.categoryService = categoryService;
     }
 
