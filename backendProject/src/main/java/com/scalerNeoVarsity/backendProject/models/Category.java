@@ -28,7 +28,6 @@ public class Category extends BaseModel {
     //We also mention the fetch type b/w Eager and Lazy
 
     @JsonIgnore
-    private List<Product> products;
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     private List<Product> products;
 
