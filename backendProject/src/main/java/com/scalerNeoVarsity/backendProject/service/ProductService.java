@@ -14,5 +14,5 @@ public interface ProductService {
 
     Product updateProduct(Long id, String title, String description, Double price, Category category, String imageUrl) throws ProductNotFoundException;
 
-    List<Product> getAllProducts();
+    List<Product> getAllProducts() throws ProductNotFoundException;
 }

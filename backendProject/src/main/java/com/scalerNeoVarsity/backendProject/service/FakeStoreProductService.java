@@ -106,11 +106,14 @@ public class FakeStoreProductService implements ProductService {
     }
 
     @Override
-    public List<Product> getAllProducts() {
+    public List<Product> getAllProducts() throws ProductNotFoundException {
         System.out.println("In the getAllProducts API in FKSPS");
         FakeStoreProductDTO[] listOfProducts =
                 restTemplate.getForObject("https://fakestoreapi.com/products/",
                         FakeStoreProductDTO[].class);
+        if (listOfProducts == null) {
+            throw new ProductNotFoundException("No Products Found in the Database");
+        }
         return new FakeStoreProductDTO().getListOfProducts(listOfProducts);
     }
 }

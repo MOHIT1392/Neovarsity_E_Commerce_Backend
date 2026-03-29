@@ -96,10 +96,14 @@ public class ProductController {
     @GetMapping("/product")
     public List<Product> getAllProducts() {
         System.out.println("Starting the Get all Products API");
-        List<Product> products = productService.getAllProducts();
-        System.out.println("Ending the Get All products API");
+        List<Product> productList = null;
+        try {
+            productList = productService.getAllProducts();
+        } catch (ProductNotFoundException e) {
+            throw new RuntimeException(e);
+        }        System.out.println("Ending the Get All products API");
 
-        return products;
+        return productList;
     }
 
     @ExceptionHandler(ProductNotFoundException.class)
