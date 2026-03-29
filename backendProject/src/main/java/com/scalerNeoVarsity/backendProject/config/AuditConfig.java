@@ -13,6 +13,6 @@ public class AuditConfig {
     @Bean
     public AuditorAware<String> auditorProvider() {
         // Return the username; replace this with logic to fetch authenticated user
-        return () -> Optional.of("Purusharth Agarwal");
+        return () -> Optional.of("Mohit Gupta");
     }
 }
