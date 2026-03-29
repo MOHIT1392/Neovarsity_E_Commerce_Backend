@@ -13,6 +13,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import com.scalerNeoVarsity.backendProject.exception.ProductNotFoundException;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.List;
 
@@ -20,15 +21,24 @@ import java.util.List;
 public class FakeStoreProductService implements ProductService {
 
     @Autowired
-    private RestTemplate restTemplate;
-
-    public FakeStoreProductService(RestTemplate restTemplate) {
+    private final RestTemplate restTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
+    public FakeStoreProductService(RestTemplate restTemplate, RedisTemplate<String, Object> redisTemplate) {
         this.restTemplate = restTemplate;
+        this.redisTemplate = redisTemplate;
     }
 
     @Override
     public Product getSingleProduct(Long id) throws ProductNotFoundException {
         System.out.println("We are inside the single product in FakeStoreProductService");
+        Product redisProduct = (Product) redisTemplate
+                .opsForHash()
+                .get("PRODUCTS", "PRODUCTS_" + id);
+
+        if (redisProduct != null) {
+            //Cache Hit
+            return redisProduct;
+        }
         FakeStoreProductDTO fakeStoreProductDTO =
                 restTemplate.getForObject("https://fakestoreapi.com/products/" + id,
                         FakeStoreProductDTO.class);
@@ -37,7 +47,7 @@ public class FakeStoreProductService implements ProductService {
         if (fakeStoreProductDTO == null) {
             throw new ProductNotFoundException("Product Not Found with id: " + id);
         }
-
+        redisTemplate.opsForHash().put("PRODUCTS", "PRODUCTS_" + id, fakeStoreProductDTO.getProduct());
         return fakeStoreProductDTO.getProduct();
     }
 
