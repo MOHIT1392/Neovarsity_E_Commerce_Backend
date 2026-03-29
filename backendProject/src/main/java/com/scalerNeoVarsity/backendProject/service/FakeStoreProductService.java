@@ -5,6 +5,7 @@ import com.scalerNeoVarsity.backendProject.models.Category;
 import com.scalerNeoVarsity.backendProject.models.Product;
 import com.scalerNeoVarsity.backendProject.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.client.RestTemplate;
 
 import org.springframework.stereotype.Service;
@@ -107,14 +108,14 @@ public class FakeStoreProductService implements ProductService {
     }
 
     @Override
-    public List<Product> getAllProducts() throws ProductNotFoundException {
+    public Page<Product> getAllProducts(int pageNumber, int pageSize, String fieldName) throws ProductNotFoundException {
         System.out.println("In the getAllProducts API in FKSPS");
-        FakeStoreProductDTO[] listOfProducts =
+        FakeStoreProductDTO[] fakeStoreListOfProducts  =
                 restTemplate.getForObject("https://fakestoreapi.com/products/",
                         FakeStoreProductDTO[].class);
-        if (listOfProducts == null) {
+        if (fakeStoreListOfProducts  == null) {
             throw new ProductNotFoundException("No Products Found in the Database");
         }
-        return new FakeStoreProductDTO().getListOfProducts(listOfProducts);
+        return (Page<Product>) new FakeStoreProductDTO().getListOfProducts(fakeStoreListOfProducts);
     }
 }

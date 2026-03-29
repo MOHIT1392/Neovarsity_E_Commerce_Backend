@@ -6,6 +6,9 @@ import com.scalerNeoVarsity.backendProject.models.Category;
 import com.scalerNeoVarsity.backendProject.models.Product;
 import com.scalerNeoVarsity.backendProject.repository.CategoryRepository;
 import com.scalerNeoVarsity.backendProject.repository.ProductRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,12 +37,19 @@ public class SelfProductService implements ProductService {
     }
 
     @Override
-    public List<Product> getAllProducts() throws ProductNotFoundException {
-        Optional<List<Product>> listOfProducts = Optional.of(productRepository.findAll());
-        if (listOfProducts.isEmpty()) {
-            throw new ProductNotFoundException("No Products in the database");
+    public Page<Product> getAllProducts(int pageNumber, int pageSize, String fieldName) throws ProductNotFoundException {
+        Page<Product> listOfProducts = productRepository.findAll(
+                PageRequest.of(
+                        pageNumber,
+                        pageSize,
+                        Sort.by(fieldName).ascending()
+                )
+        );
+
+        if (!listOfProducts.hasContent()) {
+            throw new ProductNotFoundException("Products not found in our database");
         }
-        return listOfProducts.get();
+        return listOfProducts;
     }
 
     @Override
