@@ -7,10 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToMany;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import jakarta.persistence.EntityListeners;
+import jakarta.persistence.*;
 
 import java.util.List;
 
@@ -31,7 +29,7 @@ public class Category extends BaseModel {
     //We also mention the fetch type b/w Eager and Lazy
 
     @JsonIgnore
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Product> products;
 
     public String getTitle() {
